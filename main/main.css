@@ -39,7 +39,7 @@
     border: none;
     border-radius: 5px;
 }
-body {
+/* body {
     background-color: #f0f2f5;
     display: flex;
     justify-content: center;
@@ -47,10 +47,16 @@ body {
     min-height: 100vh;
     margin: 0;
     font-family: 'Montserrat', sans-serif;
+} */
+
+.container{
+    width: 90%;
+    margin: 30px auto;
+    display: flex;
 }
 
 .game-icon {
-    background-color: #ffffff;
+    /* background-color: #ffffff; */
     border-radius: 16px;
     padding: 20px;
     width: 240px;
