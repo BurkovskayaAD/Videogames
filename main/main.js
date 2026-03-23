@@ -29,28 +29,6 @@ async function fetchData(URL, apiKey ) {
 
 // creating function
 
-async function getGameById(id,URL,apiKey){
-    // https://api.rawg.io/api/creators/{id}
-
-        // let url = (id) => `${URL}/${id}`;
-        // url = 'https://api.rawg.io/api/games/4200/?key=0fc5072e9d5f45a29c5718c6d74bcf2a';
-
-        try {
-        let response = await fetch(URL, {
-            headers: { 'Authorization': `Bearer ${apiKey}` }
-        });
-        let data = await response.json();
-        let find = data.results.find(u => u.id === id);
-        return find;
-    } catch (error) {
-    console.error('Ошибка:', error);
-    }
-}
-
-getGameById(4200,URL,apiKey).then(data => console.log(data));
-
-
-let root = document.getElementById("root");
 function createSelect(){
     const formSelect = document.querySelector(".header-form_search");
     const allOption = new Option('All genres', '');
@@ -61,33 +39,77 @@ function createSelect(){
     });
 }
 
+//рабочий хедер с  жанрами без поиска
 
-function createHeader(){
-    let header = document.createElement('div')
+// function createHeader(){
+//     let header = document.createElement('div')
+//     root.append(header);
+//     header.classList.add('header');
+//     let form = document.createElement('form');
+//     header.append(form);
+//     form.classList.add("header-form");
+//     let formInputSearch = document.createElement('input');
+//     form.append(formInputSearch);
+//     formInputSearch.classList.add("header-form_inputSearch");
+//     formInputSearch.placeholder = "Search"
+//     let formSelect = document.createElement("select");
+//     form.append(formSelect);
+//     formSelect.name = "genres";
+//     formSelect.classList.add("header-form_search");
+//     let buttonSearch = document.createElement("button");
+//     form.append(buttonSearch);
+//     buttonSearch.classList.add("header-form_buttonSearch");
+//     buttonSearch.type = "submit";
+//     buttonSearch.textContent ="SEARCH";
+//     buttonSearch.addEventListener("click", function(event){
+//         event.preventDefault();
+//     })
+//     if (genresList.length > 0) {
+//         createSelect();
+//     }
+// }
+
+
+//рабочий хедер без жанров и с поиском длинным
+function createHeader() {
+    let header = document.createElement('div');
     root.append(header);
     header.classList.add('header');
+
     let form = document.createElement('form');
     header.append(form);
     form.classList.add("header-form");
+
     let formInputSearch = document.createElement('input');
     form.append(formInputSearch);
     formInputSearch.classList.add("header-form_inputSearch");
-    formInputSearch.placeholder = "Search"
-    let formSelect = document.createElement("select");
-    form.append(formSelect);
-    formSelect.name = "genres";
-    formSelect.classList.add("header-form_search");
+    formInputSearch.placeholder = "Search";
+
     let buttonSearch = document.createElement("button");
     form.append(buttonSearch);
     buttonSearch.classList.add("header-form_buttonSearch");
     buttonSearch.type = "submit";
-    buttonSearch.textContent ="SEARCH";
-    buttonSearch.addEventListener("click", function(event){
+    buttonSearch.textContent = "SEARCH";
+
+    form.addEventListener("submit", async function (event) {
         event.preventDefault();
-    })
-    if (genresList.length > 0) {
-        createSelect();
-    }
+
+        const searchValue = formInputSearch.value.trim();
+
+        let searchURL = `https://api.rawg.io/api/games?key=${apiKey}`;
+
+        if (searchValue) {
+            searchURL += `&search=${searchValue}`;
+        }
+
+        const data = await fetchData(searchURL);
+        const oldContainer = document.querySelector('.games-container');
+        // НЕ НАХОДИТ КОНТЕЙНЕР И ПОЭТОМУ НИЧЕГО НЕ УДАЛЯЕТ
+        console.log(oldContainer)
+        if (oldContainer) oldContainer.remove();
+
+        createCard(data.results);
+    });
 }
 
 // calling functions
@@ -268,3 +290,23 @@ async function fetchDataId(id, URL, apiKey ) {
 
 
 fetchDataId("22519", URL, apiKey).then(data => console.log(data))
+
+
+
+// наработки по отображнию  данных привыборе жанра
+
+// async function fetchGamesByGenre(genreId) {
+//     if (genreId) {
+//         URL += &genres=${genreId};
+//     }
+//     const response = await fetch(URL);
+//     const data = await response.json();
+//     createCard(data.results);
+// }
+
+
+// buttonSearch.addEventListener("click", function(event){
+//         event.preventDefault();
+//         const selectedGenreId = formSelect.value;
+//         fetchGamesByGenre(selectedGenreId);
+//         })

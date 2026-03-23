@@ -1,9 +1,37 @@
-const gameData = {
-  title: "Grand Theft Auto V",
-  released: "2013-09-17",
-  image: "https://upload.wikimedia.org/wikipedia/en/a/a5/Grand_Theft_Auto_V.png",
-  description: "Grand Theft Auto V — мультиплатформенная видеоигра в жанре action-adventure с открытым миром. Действие игры происходит в вымышленном штате Сан-Андреас, основанном на Южной Калифорнии. Сюжет игры строится вокруг трёх грабителей, пытающихся совершить дерзкие ограбления в условиях давления со стороны преступного мира и коррумпированных чиновников."
-};
+let apiKey = '0fc5072e9d5f45a29c5718c6d74bcf2a';
+let URL = 'https://api.rawg.io/api/games?key=0fc5072e9d5f45a29c5718c6d74bcf2a';
+let gameData = [];
+
+// загрузки с лоадером
+function initWithLoader() {
+  const root = document.getElementById('root');
+	createHeader();
+	const loader = createLoader();
+  root.appendChild(loader);
+  getGameById(4200, URL, apiKey).then(data => {
+    gameData.push(data)
+    console.log(gameData)
+    loader.remove();
+	renderGamePage();
+});
+	
+}
+
+async function getGameById(id,URL,apiKey){
+        try {
+        let response = await fetch(URL, {
+            headers: { 'Authorization': `Bearer ${apiKey}` }
+        });
+        let data = await response.json();
+        let find = data.results.find(u => u.id === id);
+        return find;
+    } catch (error) {
+    console.error('Ошибка:', error);
+    }
+}
+
+
+
 
 // Функция для создания Loader
 function createLoader() {
@@ -30,7 +58,8 @@ function renderGamePage() {
 	// Очищаем root
   root.innerHTML = '';
 
-	const gamesArray = [gameData]; // Попробуй изменить на [] для теста пустого состояния
+	const gamesArray = gameData; // Попробуй изменить на [] для теста пустого состояния
+  console.log(gameData)
 
 	// Проверяем, пустой ли массив
   if (gamesArray.length === 0) {
@@ -49,23 +78,22 @@ function renderGamePage() {
 	// Если массив не пустой, отображаем контент
 	const container = document.createElement('div');
 	container.className = 'game-container';
-
 	const img = document.createElement('img');
-  img.src = gameData.image;
-  img.alt = gameData.title;
+  img.src = gameData[0].background_image;
+  img.alt = gameData[0].name;
   img.className = 'game-image';
 
 	const title = document.createElement('h1');
 	title.className = 'game-title';
-	title.textContent = gameData.title;
+	title.textContent = gameData[0].name;
 
 	const date = document.createElement('p');
 	date.className = 'game-date';
-	date.textContent = `Дата выхода: ${gameData.released}`;
+	date.textContent = `Дата выхода: ${gameData[0].released}`;
 
 	const desc = document.createElement('p');
 	desc.className = 'game-description';
-	desc.textContent = gameData.description;
+	desc.textContent = gameData[0].description;
 
 	container.appendChild(img);
 	container.appendChild(title);
@@ -118,16 +146,7 @@ function createHeader() {
   });
 }
 
-// Асинхронная версия для начальной загрузки с лоадером
-async function initWithLoader() {
-  const root = document.getElementById('root');
-	createHeader();
-	const loader = createLoader();
-  root.appendChild(loader)
-	await new Promise(resolve => setTimeout(resolve, 1500));
-	loader.remove();
-	renderGamePage();
-}
+
 
 
 document.addEventListener('DOMContentLoaded', initWithLoader);
