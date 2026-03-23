@@ -1,7 +1,12 @@
 let root = document.getElementById("root");
-
 const urlGenres = "https://api.rawg.io/api/genres?key=0fc5072e9d5f45a29c5718c6d74bcf2a"
 let genresList = [];
+let apiKey = '0fc5072e9d5f45a29c5718c6d74bcf2a';
+let URL = 'https://api.rawg.io/api/games?key=0fc5072e9d5f45a29c5718c6d74bcf2a';
+let array = [];
+
+//async function
+
 async function fetchGenres() {
         const response = await fetch(urlGenres);
         const data = await response.json();
@@ -9,6 +14,21 @@ async function fetchGenres() {
         console.log(genresList)
         createSelect();
 }
+
+async function fetchData(URL, apiKey ) {
+    try {
+        let response = await fetch(URL, {
+            headers: { 'Authorization': `Bearer ${apiKey}` }
+        });
+        let data = await response.json();
+        return data;
+    } catch (error) {
+    console.error('Ошибка:', error);
+    }
+}
+
+// creating function
+
 function createSelect(){
     const formSelect = document.querySelector(".header-form_search");
     const allOption = new Option('All genres', '');
@@ -18,9 +38,7 @@ function createSelect(){
     formSelect.add(option);
     });
 }
-let apiKey = '0fc5072e9d5f45a29c5718c6d74bcf2a';
-let URL = 'https://api.rawg.io/api/games?key=0fc5072e9d5f45a29c5718c6d74bcf2a';
-let array = [];
+
 
 function createHeader(){
     let header = document.createElement('div')
@@ -49,31 +67,18 @@ function createHeader(){
         createSelect();
     }
 }
+
+// calling functions
+
+
 fetchGenres();
-createHeader();
-
-
-
-
-async function fetchData(URL, apiKey ) {
-    try {
-        let response = await fetch(URL, {
-            headers: { 'Authorization': `Bearer ${apiKey}` }
-        });
-        let data = await response.json();
-        return data;
-    } catch (error) {
-    console.error('Ошибка:', error);
-    }
-}
-
-
 fetchData(URL,apiKey).then(data => console.log(data.results))
 fetchData(URL,apiKey).then(data => {
-    // array = data.results
     createCard(data.results)
 })
 createHeader();
+
+
 
 // async function getGameById(id,URL,apiKey){
 
