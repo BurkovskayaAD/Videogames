@@ -49,8 +49,14 @@
     font-family: 'Montserrat', sans-serif;
 } */
 
+.container{
+    width: 90%;
+    margin: 30px auto;
+    display: flex;
+}
+
 .game-icon {
-    background-color: #ffffff;
+    /* background-color: #ffffff; */
     border-radius: 16px;
     padding: 20px;
     width: 240px;
